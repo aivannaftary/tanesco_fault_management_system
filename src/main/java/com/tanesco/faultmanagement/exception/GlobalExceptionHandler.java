@@ -3,13 +3,14 @@ package com.tanesco.faultmanagement.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
+
 import org.springframework.validation.FieldError;
 
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import org.springframework.security.authentication.BadCredentialsException;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -24,27 +25,11 @@ public class GlobalExceptionHandler {
     ) {
 
         Map<String, Object> response =
-                new LinkedHashMap<>();
-
-        response.put(
-                "timestamp",
-                LocalDateTime.now()
-        );
-
-        response.put(
-                "status",
-                HttpStatus.BAD_REQUEST.value()
-        );
-
-        response.put(
-                "error",
-                "Bad Request"
-        );
-
-        response.put(
-                "message",
-                exception.getMessage()
-        );
+                createResponse(
+                        HttpStatus.BAD_REQUEST,
+                        "Bad Request",
+                        exception.getMessage()
+                );
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -57,30 +42,48 @@ public class GlobalExceptionHandler {
     ) {
 
         Map<String, Object> response =
-                new LinkedHashMap<>();
-
-        response.put(
-                "timestamp",
-                LocalDateTime.now()
-        );
-
-        response.put(
-                "status",
-                HttpStatus.CONFLICT.value()
-        );
-
-        response.put(
-                "error",
-                "Conflict"
-        );
-
-        response.put(
-                "message",
-                exception.getMessage()
-        );
+                createResponse(
+                        HttpStatus.CONFLICT,
+                        "Conflict",
+                        exception.getMessage()
+                );
 
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(response);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDeniedException(
+            AccessDeniedException exception
+    ) {
+
+        Map<String, Object> response =
+                createResponse(
+                        HttpStatus.FORBIDDEN,
+                        "Forbidden",
+                        exception.getMessage()
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(response);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentialsException(
+            BadCredentialsException exception
+    ) {
+
+        Map<String, Object> response =
+                createResponse(
+                        HttpStatus.UNAUTHORIZED,
+                        "Unauthorized",
+                        "Invalid username or password."
+                );
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(response);
     }
 
@@ -92,8 +95,11 @@ public class GlobalExceptionHandler {
         Map<String, String> validationErrors =
                 new LinkedHashMap<>();
 
-        for (FieldError error :
-                exception.getBindingResult().getFieldErrors()) {
+        for (
+                FieldError error :
+                exception.getBindingResult()
+                        .getFieldErrors()
+        ) {
 
             validationErrors.put(
                     error.getField(),
@@ -134,77 +140,78 @@ public class GlobalExceptionHandler {
                 .body(response);
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-public ResponseEntity<Map<String, Object>> handleBadCredentialsException(
-        BadCredentialsException exception
-) {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGeneralException(
+            Exception exception
+    ) {
 
-    Map<String, Object> response =
-            new LinkedHashMap<>();
+        System.err.println(
+                "========================================"
+        );
 
-    response.put(
-            "timestamp",
-            LocalDateTime.now()
-    );
+        System.err.println(
+                "UNEXPECTED APPLICATION ERROR"
+        );
 
-    response.put(
-            "status",
-            HttpStatus.UNAUTHORIZED.value()
-    );
+        System.err.println(
+                "Exception type: "
+                        + exception.getClass().getName()
+        );
 
-    response.put(
-            "error",
-            "Unauthorized"
-    );
+        System.err.println(
+                "Exception message: "
+                        + exception.getMessage()
+        );
 
-    response.put(
-            "message",
-            "Invalid username or password."
-    );
+        System.err.println(
+                "========================================"
+        );
 
-    return ResponseEntity
-            .status(HttpStatus.UNAUTHORIZED)
-            .body(response);
-}
+        exception.printStackTrace();
 
-   @ExceptionHandler(Exception.class)
-public ResponseEntity<Map<String, Object>> handleGeneralException(
-        Exception exception
-) {
+        Map<String, Object> response =
+                createResponse(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Internal Server Error",
+                        "An unexpected error occurred."
+                );
 
-    System.err.println("========================================");
-    System.err.println("UNEXPECTED APPLICATION ERROR");
-    System.err.println("Exception type: " + exception.getClass().getName());
-    System.err.println("Exception message: " + exception.getMessage());
-    System.err.println("========================================");
+        return ResponseEntity
+                .status(
+                        HttpStatus.INTERNAL_SERVER_ERROR
+                )
+                .body(response);
+    }
 
-    exception.printStackTrace();
+    private Map<String, Object> createResponse(
+            HttpStatus status,
+            String error,
+            String message
+    ) {
 
-    Map<String, Object> response =
-            new LinkedHashMap<>();
+        Map<String, Object> response =
+                new LinkedHashMap<>();
 
-    response.put(
-            "timestamp",
-            LocalDateTime.now()
-    );
+        response.put(
+                "timestamp",
+                LocalDateTime.now()
+        );
 
-    response.put(
-            "status",
-            HttpStatus.INTERNAL_SERVER_ERROR.value()
-    );
+        response.put(
+                "status",
+                status.value()
+        );
 
-    response.put(
-            "error",
-            "Internal Server Error"
-    );
+        response.put(
+                "error",
+                error
+        );
 
-    response.put(
-            "message",
-            "An unexpected error occurred."
-    );
+        response.put(
+                "message",
+                message
+        );
 
-    return ResponseEntity
-            .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(response);
-}
+        return response;
+    }
 }

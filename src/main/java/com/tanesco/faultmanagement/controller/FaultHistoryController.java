@@ -5,6 +5,8 @@ import com.tanesco.faultmanagement.service.FaultHistoryService;
 
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.core.Authentication;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,14 +28,18 @@ public class FaultHistoryController {
 
     @GetMapping("/{referenceNumber}/history")
     public ResponseEntity<List<FaultUpdateResponse>> getFaultHistory(
-            @PathVariable String referenceNumber
+            @PathVariable String referenceNumber,
+            Authentication authentication
     ) {
 
         List<FaultUpdateResponse> history =
                 faultHistoryService.getFaultHistory(
-                        referenceNumber
+                        referenceNumber,
+                        authentication.getName()
                 );
 
-        return ResponseEntity.ok(history);
+        return ResponseEntity.ok(
+                history
+        );
     }
 }

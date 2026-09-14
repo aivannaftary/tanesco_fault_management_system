@@ -4,28 +4,31 @@ import com.tanesco.faultmanagement.dto.FaultRequest;
 import com.tanesco.faultmanagement.dto.FaultResponse;
 import com.tanesco.faultmanagement.entity.Fault;
 import com.tanesco.faultmanagement.entity.FaultStatus;
-import com.tanesco.faultmanagement.entity.FaultUpdate;
+import com.tanesco.faultmanagement.entity.Role;
 import com.tanesco.faultmanagement.entity.User;
+import com.tanesco.faultmanagement.entity.FaultUpdate;
 import com.tanesco.faultmanagement.repository.FaultRepository;
 import com.tanesco.faultmanagement.repository.FaultUpdateRepository;
 import com.tanesco.faultmanagement.repository.UserRepository;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 public class FaultService {
 
     private final FaultRepository faultRepository;
-
     private final FaultUpdateRepository faultUpdateRepository;
-
     private final UserRepository userRepository;
+
+    private final SecureRandom secureRandom =
+            new SecureRandom();
 
     public FaultService(
             FaultRepository faultRepository,
@@ -43,14 +46,17 @@ public class FaultService {
             FaultRequest request
     ) {
 
-        User customer = userRepository.findByUsername(username)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Customer account was not found."
-                        )
-                );
+        User customer =
+                findUserByUsername(username);
 
-        Fault fault = new Fault();
+        if (customer.getRole() != Role.CUSTOMER) {
+            throw new AccessDeniedException(
+                    "Only customers are allowed to report faults."
+            );
+        }
+
+        Fault fault =
+                new Fault();
 
         fault.setReferenceNumber(
                 generateReferenceNumber()
@@ -70,9 +76,7 @@ public class FaultService {
                 request.getLocation().trim()
         );
 
-        if (request.getArea() != null
-                && !request.getArea().isBlank()) {
-
+        if (request.getArea() != null) {
             fault.setArea(
                     request.getArea().trim()
             );
@@ -89,7 +93,7 @@ public class FaultService {
         Fault savedFault =
                 faultRepository.save(fault);
 
-        FaultUpdate firstUpdate =
+        FaultUpdate initialUpdate =
                 new FaultUpdate(
                         savedFault,
                         customer,
@@ -97,9 +101,13 @@ public class FaultService {
                         "Fault reported successfully and is waiting for review."
                 );
 
-        faultUpdateRepository.save(firstUpdate);
+        faultUpdateRepository.save(
+                initialUpdate
+        );
 
-        return convertToResponse(savedFault);
+        return convertToResponse(
+                savedFault
+        );
     }
 
     @Transactional(readOnly = true)
@@ -107,12 +115,14 @@ public class FaultService {
             String username
     ) {
 
-        User customer = userRepository.findByUsername(username)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Customer account was not found."
-                        )
-                );
+        User customer =
+                findUserByUsername(username);
+
+        if (customer.getRole() != Role.CUSTOMER) {
+            throw new AccessDeniedException(
+                    "Only customers can access the customer fault list."
+            );
+        }
 
         return faultRepository
                 .findByCustomerIdOrderByReportedAtDesc(
@@ -125,47 +135,86 @@ public class FaultService {
 
     @Transactional(readOnly = true)
     public FaultResponse getFaultByReferenceNumber(
-            String referenceNumber
+            String referenceNumber,
+            String username
     ) {
 
         Fault fault =
-                faultRepository
-                        .findByReferenceNumber(referenceNumber)
-                        .orElseThrow(() ->
-                                new IllegalArgumentException(
-                                        "Fault was not found with reference number: "
-                                                + referenceNumber
-                                )
-                        );
+                findFault(referenceNumber);
 
-        return convertToResponse(fault);
+        User currentUser =
+                findUserByUsername(username);
+
+        if (currentUser.getRole() == Role.CUSTOMER) {
+
+            if (!fault.getCustomer()
+                    .getId()
+                    .equals(currentUser.getId())) {
+
+                throw new AccessDeniedException(
+                        "You are not allowed to view this fault."
+                );
+            }
+        }
+
+        return convertToResponse(
+                fault
+        );
+    }
+
+    private Fault findFault(
+            String referenceNumber
+    ) {
+
+        return faultRepository
+                .findByReferenceNumber(
+                        referenceNumber
+                )
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Fault was not found with reference number: "
+                                        + referenceNumber
+                        )
+                );
+    }
+
+    private User findUserByUsername(
+            String username
+    ) {
+
+        return userRepository
+                .findByUsername(username)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "User was not found: "
+                                        + username
+                        )
+                );
     }
 
     private String generateReferenceNumber() {
 
         String year =
                 String.valueOf(
-                        LocalDateTime.now().getYear()
+                        LocalDate.now().getYear()
                 );
 
         String date =
-                LocalDateTime.now()
-                        .format(
-                                DateTimeFormatter.ofPattern(
-                                        "MMdd"
-                                )
-                        );
+                LocalDate.now().format(
+                        DateTimeFormatter.ofPattern(
+                                "MMdd"
+                        )
+                );
 
         String referenceNumber;
 
         do {
 
             int randomNumber =
-                    ThreadLocalRandom.current()
-                            .nextInt(
-                                    1000,
-                                    10000
-                            );
+                    1000
+                            + secureRandom.nextInt(
+                            9000
+                    );
 
             referenceNumber =
                     "TAN-"

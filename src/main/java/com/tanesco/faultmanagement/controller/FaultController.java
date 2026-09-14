@@ -34,8 +34,8 @@ public class FaultController {
 
     @PostMapping
     public ResponseEntity<FaultResponse> createFault(
-            Authentication authentication,
-            @Valid @RequestBody FaultRequest request
+            @Valid @RequestBody FaultRequest request,
+            Authentication authentication
     ) {
 
         FaultResponse response =
@@ -59,19 +59,25 @@ public class FaultController {
                         authentication.getName()
                 );
 
-        return ResponseEntity.ok(faults);
+        return ResponseEntity.ok(
+                faults
+        );
     }
 
     @GetMapping("/{referenceNumber}")
-    public ResponseEntity<FaultResponse> getFaultByReferenceNumber(
-            @PathVariable String referenceNumber
+    public ResponseEntity<FaultResponse> getFault(
+            @PathVariable String referenceNumber,
+            Authentication authentication
     ) {
 
         FaultResponse response =
                 faultService.getFaultByReferenceNumber(
-                        referenceNumber
+                        referenceNumber,
+                        authentication.getName()
                 );
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                response
+        );
     }
 }

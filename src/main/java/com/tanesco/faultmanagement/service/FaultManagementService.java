@@ -4,15 +4,18 @@ import com.tanesco.faultmanagement.dto.AssignFaultRequest;
 import com.tanesco.faultmanagement.dto.FaultResponse;
 import com.tanesco.faultmanagement.dto.ResolveFaultRequest;
 import com.tanesco.faultmanagement.dto.UpdateFaultStatusRequest;
+
 import com.tanesco.faultmanagement.entity.Fault;
 import com.tanesco.faultmanagement.entity.FaultStatus;
 import com.tanesco.faultmanagement.entity.FaultUpdate;
 import com.tanesco.faultmanagement.entity.Role;
 import com.tanesco.faultmanagement.entity.User;
+
 import com.tanesco.faultmanagement.repository.FaultRepository;
 import com.tanesco.faultmanagement.repository.FaultUpdateRepository;
 import com.tanesco.faultmanagement.repository.UserRepository;
 
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,9 +25,7 @@ import java.time.LocalDateTime;
 public class FaultManagementService {
 
     private final FaultRepository faultRepository;
-
     private final FaultUpdateRepository faultUpdateRepository;
-
     private final UserRepository userRepository;
 
     public FaultManagementService(
@@ -44,28 +45,70 @@ public class FaultManagementService {
             String updatedByUsername
     ) {
 
-        Fault fault = findFault(referenceNumber);
+        Fault fault =
+                findFault(referenceNumber);
 
-        User technician = userRepository.findById(
-                        request.getTechnicianId()
-                )
-                .orElseThrow(() ->
-                        new IllegalArgumentException(
-                                "Technician was not found."
-                        )
-                );
+        User updatedBy =
+                findUser(updatedByUsername);
 
-        if (technician.getRole() != Role.TECHNICIAN) {
-            throw new IllegalArgumentException(
-                    "Selected user is not a technician."
+        /*
+         * Only an OFFICER or ADMIN can assign faults.
+         */
+        if (
+                updatedBy.getRole() != Role.OFFICER
+                        &&
+                updatedBy.getRole() != Role.ADMIN
+        ) {
+
+            throw new AccessDeniedException(
+                    "Only an officer or administrator can assign faults."
             );
         }
 
-        User updatedBy = findUser(updatedByUsername);
+        /*
+         * Fault must still be waiting for assignment.
+         */
+        if (
+                fault.getStatus() != FaultStatus.SUBMITTED
+                        &&
+                fault.getStatus() != FaultStatus.UNDER_REVIEW
+        ) {
 
-        fault.setTechnician(technician);
-        fault.setStatus(FaultStatus.ASSIGNED);
-        fault.setAssignedAt(LocalDateTime.now());
+            throw new IllegalStateException(
+                    "Only submitted or under-review faults can be assigned."
+            );
+        }
+
+        User technician =
+                userRepository
+                        .findById(
+                                request.getTechnicianId()
+                        )
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Technician was not found with ID: "
+                                                + request.getTechnicianId()
+                                )
+                        );
+
+        if (technician.getRole() != Role.TECHNICIAN) {
+
+            throw new IllegalArgumentException(
+                    "The selected user is not a technician."
+            );
+        }
+
+        fault.setTechnician(
+                technician
+        );
+
+        fault.setStatus(
+                FaultStatus.ASSIGNED
+        );
+
+        fault.setAssignedAt(
+                LocalDateTime.now()
+        );
 
         Fault savedFault =
                 faultRepository.save(fault);
@@ -80,9 +123,13 @@ public class FaultManagementService {
                                 + "."
                 );
 
-        faultUpdateRepository.save(update);
+        faultUpdateRepository.save(
+                update
+        );
 
-        return convertToResponse(savedFault);
+        return convertToResponse(
+                savedFault
+        );
     }
 
     @Transactional
@@ -92,29 +139,83 @@ public class FaultManagementService {
             String updatedByUsername
     ) {
 
-        Fault fault = findFault(referenceNumber);
+        Fault fault =
+                findFault(referenceNumber);
 
         User updatedBy =
                 findUser(updatedByUsername);
 
-        FaultStatus newStatus =
+        FaultStatus currentStatus =
+                fault.getStatus();
+
+        FaultStatus requestedStatus =
                 request.getStatus();
 
-        fault.setStatus(newStatus);
+        /*
+         * TECHNICIAN WORKFLOW
+         */
+        if (updatedBy.getRole() == Role.TECHNICIAN) {
 
-        if (newStatus == FaultStatus.IN_PROGRESS
-                && fault.getStartedAt() == null) {
-
-            fault.setStartedAt(
-                    LocalDateTime.now()
+            validateAssignedTechnician(
+                    fault,
+                    updatedBy
             );
+
+            if (
+                    currentStatus == FaultStatus.ASSIGNED
+                            &&
+                    requestedStatus == FaultStatus.IN_PROGRESS
+            ) {
+
+                fault.setStatus(
+                        FaultStatus.IN_PROGRESS
+                );
+
+                if (fault.getStartedAt() == null) {
+
+                    fault.setStartedAt(
+                            LocalDateTime.now()
+                    );
+                }
+
+            } else {
+
+                throw new IllegalStateException(
+                        "A technician can only change an assigned fault to IN_PROGRESS."
+                );
+            }
         }
 
-        if (newStatus == FaultStatus.CLOSED
-                && fault.getClosedAt() == null) {
+        /*
+         * OFFICER / ADMIN WORKFLOW
+         */
+        else if (
+                updatedBy.getRole() == Role.OFFICER
+                        ||
+                updatedBy.getRole() == Role.ADMIN
+        ) {
 
-            fault.setClosedAt(
-                    LocalDateTime.now()
+            validateOfficerTransition(
+                    currentStatus,
+                    requestedStatus
+            );
+
+            fault.setStatus(
+                    requestedStatus
+            );
+
+            if (requestedStatus == FaultStatus.CLOSED) {
+
+                fault.setClosedAt(
+                        LocalDateTime.now()
+                );
+            }
+        }
+
+        else {
+
+            throw new AccessDeniedException(
+                    "You are not allowed to update fault status."
             );
         }
 
@@ -125,13 +226,17 @@ public class FaultManagementService {
                 new FaultUpdate(
                         savedFault,
                         updatedBy,
-                        newStatus,
+                        requestedStatus,
                         request.getMessage().trim()
                 );
 
-        faultUpdateRepository.save(update);
+        faultUpdateRepository.save(
+                update
+        );
 
-        return convertToResponse(savedFault);
+        return convertToResponse(
+                savedFault
+        );
     }
 
     @Transactional
@@ -141,10 +246,33 @@ public class FaultManagementService {
             String updatedByUsername
     ) {
 
-        Fault fault = findFault(referenceNumber);
+        Fault fault =
+                findFault(referenceNumber);
 
-        User updatedBy =
+        User technician =
                 findUser(updatedByUsername);
+
+        if (technician.getRole() != Role.TECHNICIAN) {
+
+            throw new AccessDeniedException(
+                    "Only a technician can resolve a fault."
+            );
+        }
+
+        validateAssignedTechnician(
+                fault,
+                technician
+        );
+
+        if (
+                fault.getStatus()
+                        != FaultStatus.IN_PROGRESS
+        ) {
+
+            throw new IllegalStateException(
+                    "Only an IN_PROGRESS fault can be resolved."
+            );
+        }
 
         fault.setActualCause(
                 request.getActualCause().trim()
@@ -168,15 +296,112 @@ public class FaultManagementService {
         FaultUpdate update =
                 new FaultUpdate(
                         savedFault,
-                        updatedBy,
+                        technician,
                         FaultStatus.RESOLVED,
                         "Fault has been resolved. "
                                 + request.getResolutionNotes().trim()
                 );
 
-        faultUpdateRepository.save(update);
+        faultUpdateRepository.save(
+                update
+        );
 
-        return convertToResponse(savedFault);
+        return convertToResponse(
+                savedFault
+        );
+    }
+
+    private void validateAssignedTechnician(
+            Fault fault,
+            User technician
+    ) {
+
+        if (fault.getTechnician() == null) {
+
+            throw new AccessDeniedException(
+                    "This fault has not been assigned to a technician."
+            );
+        }
+
+        if (
+                !fault.getTechnician()
+                        .getId()
+                        .equals(
+                                technician.getId()
+                        )
+        ) {
+
+            throw new AccessDeniedException(
+                    "You can only work on faults assigned to you."
+            );
+        }
+    }
+
+    private void validateOfficerTransition(
+            FaultStatus currentStatus,
+            FaultStatus requestedStatus
+    ) {
+
+        boolean validTransition = false;
+
+        /*
+         * SUBMITTED -> UNDER_REVIEW
+         */
+        if (
+                currentStatus == FaultStatus.SUBMITTED
+                        &&
+                requestedStatus == FaultStatus.UNDER_REVIEW
+        ) {
+
+            validTransition = true;
+        }
+
+        /*
+         * SUBMITTED -> REJECTED
+         */
+        else if (
+                currentStatus == FaultStatus.SUBMITTED
+                        &&
+                requestedStatus == FaultStatus.REJECTED
+        ) {
+
+            validTransition = true;
+        }
+
+        /*
+         * UNDER_REVIEW -> REJECTED
+         */
+        else if (
+                currentStatus == FaultStatus.UNDER_REVIEW
+                        &&
+                requestedStatus == FaultStatus.REJECTED
+        ) {
+
+            validTransition = true;
+        }
+
+        /*
+         * RESOLVED -> CLOSED
+         */
+        else if (
+                currentStatus == FaultStatus.RESOLVED
+                        &&
+                requestedStatus == FaultStatus.CLOSED
+        ) {
+
+            validTransition = true;
+        }
+
+        if (!validTransition) {
+
+            throw new IllegalStateException(
+                    "Invalid fault status transition from "
+                            + currentStatus
+                            + " to "
+                            + requestedStatus
+                            + "."
+            );
+        }
     }
 
     private Fault findFault(
@@ -184,7 +409,9 @@ public class FaultManagementService {
     ) {
 
         return faultRepository
-                .findByReferenceNumber(referenceNumber)
+                .findByReferenceNumber(
+                        referenceNumber
+                )
                 .orElseThrow(() ->
                         new IllegalArgumentException(
                                 "Fault was not found with reference number: "
@@ -201,7 +428,8 @@ public class FaultManagementService {
                 .findByUsername(username)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "User account was not found."
+                                "User was not found: "
+                                        + username
                         )
                 );
     }
