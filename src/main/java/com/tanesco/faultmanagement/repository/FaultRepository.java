@@ -5,31 +5,36 @@ import com.tanesco.faultmanagement.entity.FaultStatus;
 import com.tanesco.faultmanagement.entity.Priority;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface FaultRepository extends JpaRepository<Fault, Long> {
+public interface FaultRepository
+        extends JpaRepository<Fault, Long>,
+        JpaSpecificationExecutor<Fault> {
 
-    Optional<Fault> findByReferenceNumber(String referenceNumber);
+    Optional<Fault> findByReferenceNumber(
+            String referenceNumber
+    );
 
-    List<Fault> findByCustomerIdOrderByReportedAtDesc(Long customerId);
+    boolean existsByReferenceNumber(
+            String referenceNumber
+    );
 
-    List<Fault> findByTechnicianIdOrderByReportedAtDesc(Long technicianId);
+    List<Fault> findByCustomerIdOrderByReportedAtDesc(
+            Long customerId
+    );
 
-    List<Fault> findByStatusOrderByReportedAtDesc(FaultStatus status);
+    List<Fault> findByStatusOrderByReportedAtDesc(
+            FaultStatus status
+    );
 
-    List<Fault> findByPriorityOrderByReportedAtDesc(Priority priority);
+    long countByStatus(
+            FaultStatus status
+    );
 
-    List<Fault> findByCategoryIgnoreCaseOrderByReportedAtDesc(String category);
-
-    List<Fault> findByLocationContainingIgnoreCaseOrderByReportedAtDesc(String location);
-
-    long countByStatus(FaultStatus status);
-
-    long countByPriority(Priority priority);
-
-    boolean existsByReferenceNumber(String referenceNumber);
+    long countByPriority(
+            Priority priority
+    );
 }

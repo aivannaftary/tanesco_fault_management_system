@@ -11,7 +11,6 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,12 +21,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.springframework.security.web.SecurityFilterChain;
-
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
@@ -37,7 +34,6 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
-
     private final UserDetailsService userDetailsService;
 
     public SecurityConfig(
@@ -55,12 +51,15 @@ public class SecurityConfig {
 
         http
 
+                // REST API uses JWT, so CSRF is disabled.
                 .csrf(csrf -> csrf.disable())
 
+                // Allow requests from our frontend.
                 .cors(cors -> cors.configurationSource(
                         corsConfigurationSource()
                 ))
 
+                // JWT authentication is stateless.
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(
                                 SessionCreationPolicy.STATELESS
@@ -69,6 +68,9 @@ public class SecurityConfig {
 
                 .authorizeHttpRequests(auth -> auth
 
+                        // ==============================
+                        // PUBLIC ENDPOINTS
+                        // ==============================
                         .requestMatchers(
                                 "/",
                                 "/index.html",
@@ -81,10 +83,17 @@ public class SecurityConfig {
                                 "/api/auth/login"
                         ).permitAll()
 
+                        // ==============================
+                        // ADMIN ENDPOINTS
+                        // ADMIN ONLY
+                        // ==============================
                         .requestMatchers(
                                 "/api/admin/**"
                         ).hasRole("ADMIN")
 
+                        // ==============================
+                        // STAFF ENDPOINTS
+                        // ==============================
                         .requestMatchers(
                                 "/api/staff/**"
                         ).hasAnyRole(
@@ -93,17 +102,34 @@ public class SecurityConfig {
                                 "TECHNICIAN"
                         )
 
+                        // ==============================
+                        // FAULT ENDPOINTS
+                        // Any authenticated user can
+                        // reach these endpoints.
+                        //
+                        // Service-level authorization
+                        // determines which fault they
+                        // are actually allowed to use.
+                        // ==============================
                         .requestMatchers(
                                 "/api/faults/**"
                         ).authenticated()
 
-                        .anyRequest().authenticated()
+                        // ==============================
+                        // EVERYTHING ELSE
+                        // ==============================
+                        .anyRequest()
+                        .authenticated()
                 )
 
+                // Authentication provider used for
+                // username/password authentication.
                 .authenticationProvider(
                         authenticationProvider()
                 )
 
+                // JWT filter must run before Spring's
+                // username/password authentication filter.
                 .addFilterBefore(
                         jwtAuthenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
@@ -112,11 +138,17 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // ==============================================
+    // AUTHENTICATION PROVIDER
+    // ==============================================
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
 
         DaoAuthenticationProvider authenticationProvider =
-                new DaoAuthenticationProvider(userDetailsService);
+                new DaoAuthenticationProvider(
+                        userDetailsService
+                );
 
         authenticationProvider.setPasswordEncoder(
                 passwordEncoder()
@@ -125,13 +157,22 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
+    // ==============================================
+    // AUTHENTICATION MANAGER
+    // ==============================================
+
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
     ) throws Exception {
 
-        return configuration.getAuthenticationManager();
+        return configuration
+                .getAuthenticationManager();
     }
+
+    // ==============================================
+    // PASSWORD ENCODER
+    // ==============================================
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -139,12 +180,22 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // ==============================================
+    // CORS CONFIGURATION
+    // ==============================================
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration =
                 new CorsConfiguration();
 
+        /*
+         * Backend / frontend development origins.
+         *
+         * 8080 -> Spring Boot
+         * 5500 -> VS Code Live Server
+         */
         configuration.setAllowedOrigins(
                 List.of(
                         "http://localhost:8080",
@@ -178,7 +229,9 @@ public class SecurityConfig {
                 )
         );
 
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(
+                true
+        );
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
