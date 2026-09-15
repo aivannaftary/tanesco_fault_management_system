@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | TANESCO Fault Management System</title>
+
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body>
+
+    <main class="auth-page">
+
+        <section class="auth-brand">
+
+            <div class="brand-content">
+
+                <div class="brand-badge">
+                    TANESCO
+                </div>
+
+                <h1>
+                    Fault Management System
+                </h1>
+
+                <p>
+                    Report, track and manage electricity faults
+                    through a secure digital platform.
+                </p>
+
+                <div class="brand-features">
+
+                    <div class="feature">
+                        <span>✓</span>
+                        Report electricity faults
+                    </div>
+
+                    <div class="feature">
+                        <span>✓</span>
+                        Track complaint progress
+                    </div>
+
+                    <div class="feature">
+                        <span>✓</span>
+                        Manage field operations
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="auth-section">
+
+            <div class="auth-card">
+
+                <div class="auth-header">
+
+                    <h2>Welcome Back</h2>
+
+                    <p>
+                        Sign in to continue to the TANESCO
+                        Fault Management System.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+
+                <form id="loginForm">
+
+                    <div class="form-group">
+
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            placeholder="Enter your username"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="togglePassword"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        id="loginButton"
+                    >
+                        Sign In
+                    </button>
+
+                </form>
+
+
+                <div class="auth-footer">
+
+                    <p>
+                        Don't have an account?
+
+                        <a href="/register.html">
+                            Create Account
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+
+</body>
+
+</html>

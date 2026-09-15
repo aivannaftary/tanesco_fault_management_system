@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Register | TANESCO Fault Management System
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="/css/auth.css"
+    >
+
+</head>
+
+
+<body>
+
+    <main class="auth-page">
+
+        <section class="auth-brand">
+
+            <div class="brand-content">
+
+                <div class="brand-badge">
+                    TANESCO
+                </div>
+
+                <h1>
+                    Fault Management System
+                </h1>
+
+                <p>
+                    Create a customer account to report
+                    electricity faults and monitor their
+                    progress.
+                </p>
+
+                <div class="brand-features">
+
+                    <div class="feature">
+                        <span>✓</span>
+                        Submit fault complaints
+                    </div>
+
+                    <div class="feature">
+                        <span>✓</span>
+                        Receive a fault reference number
+                    </div>
+
+                    <div class="feature">
+                        <span>✓</span>
+                        Track resolution progress
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="auth-section">
+
+            <div class="auth-card register-card">
+
+                <div class="auth-header">
+
+                    <h2>Create Account</h2>
+
+                    <p>
+                        Register as a customer to start
+                        reporting and tracking faults.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+
+                <form id="registerForm">
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+
+                            <label for="fullName">
+                                Full Name
+                            </label>
+
+                            <input
+                                type="text"
+                                id="fullName"
+                                placeholder="Enter your full name"
+                                autocomplete="name"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="username">
+                                Username
+                            </label>
+
+                            <input
+                                type="text"
+                                id="username"
+                                placeholder="Choose username"
+                                autocomplete="username"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="phone">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            placeholder="Example: 0712345678"
+                            autocomplete="tel"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            Password
+                        </label>
+
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Create password"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="togglePassword"
+                            >
+                                Show
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="primary-btn"
+                        id="registerButton"
+                    >
+                        Create Account
+                    </button>
+
+                </form>
+
+
+                <div class="auth-footer">
+
+                    <p>
+                        Already have an account?
+
+                        <a href="/">
+                            Sign In
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+
+</body>
+
+</html>

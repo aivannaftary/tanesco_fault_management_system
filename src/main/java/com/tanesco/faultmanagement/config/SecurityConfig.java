@@ -71,18 +71,24 @@ public class SecurityConfig {
                         // ==============================
                         // PUBLIC ENDPOINTS
                         // ==============================
-                        .requestMatchers(
-                                "/",
-                                "/index.html",
-                                "/login.html",
-                                "/register.html",
-                                "/css/**",
-                                "/js/**",
-                                "/images/**",
-                                "/api/auth/register",
-                                "/api/auth/login"
-                        ).permitAll()
+                       .requestMatchers(
+                            "/",
+                            "/index.html",
+                            "/login.html",
+                           "/register.html",
 
+                           "/customer/**",
+                           "/technician/**",
+                           "/officer/**",
+                           "/admin/**",
+
+                          "/css/**",
+                          "/js/**",
+                          "/images/**",
+
+                         "/api/auth/register",
+                          "/api/auth/login"
+                         ).permitAll()
                         // ==============================
                         // ADMIN ENDPOINTS
                         // ADMIN ONLY
