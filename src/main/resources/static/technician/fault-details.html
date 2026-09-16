@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Fault Details | TANESCO Technician</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+</head>
+
+
+<body data-page="technician-fault-details">
+
+
+<div class="app-layout">
+
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                T
+            </div>
+
+            <div>
+
+                <h2>
+                    TANESCO
+                </h2>
+
+                <p>
+                    Fault Management
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+
+            <a
+                href="/technician/dashboard.html"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+
+            <a
+                href="/technician/assigned-faults.html"
+                class="nav-link active"
+            >
+                Assigned Faults
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <button
+                class="logout-button"
+                onclick="logout()"
+            >
+                Sign Out
+            </button>
+
+        </div>
+
+
+    </aside>
+
+
+    <main class="main-content">
+
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+
+            <div>
+
+                <p class="page-label">
+                    TECHNICIAN PORTAL
+                </p>
+
+                <h1>
+                    Fault Details
+                </h1>
+
+            </div>
+
+
+            <div class="user-profile">
+
+
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
+                    T
+                </div>
+
+
+                <div>
+
+                    <strong id="userFullName">
+                        Technician
+                    </strong>
+
+                    <span id="userRole">
+                        TECHNICIAN
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <!-- DETAILS -->
+
+        <section class="content-card">
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <p class="section-label">
+                        ASSIGNED FAULT
+                    </p>
+
+                    <h2 id="detailReference">
+                        Loading...
+                    </h2>
+
+                </div>
+
+
+                <span
+                    id="detailStatus"
+                    class="status-badge"
+                >
+                    Loading
+                </span>
+
+
+            </div>
+
+
+            <div class="detail-list">
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Customer
+                    </span>
+
+                    <strong id="detailCustomer">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Customer Username
+                    </span>
+
+                    <strong id="detailCustomerUsername">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Category
+                    </span>
+
+                    <strong id="detailCategory">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Priority
+                    </span>
+
+                    <strong id="detailPriority">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Area
+                    </span>
+
+                    <strong id="detailArea">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Location
+                    </span>
+
+                    <strong id="detailLocation">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item full">
+
+                    <span>
+                        Description
+                    </span>
+
+                    <strong id="detailDescription">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Reported
+                    </span>
+
+                    <strong id="detailReported">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Assigned
+                    </span>
+
+                    <strong id="detailAssigned">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Work Started
+                    </span>
+
+                    <strong id="detailStarted">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="detail-item">
+
+                    <span>
+                        Resolved
+                    </span>
+
+                    <strong id="detailResolved">
+                        -
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- UPDATE STATUS -->
+
+        <section
+            class="content-card"
+            id="statusUpdateSection"
+        >
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <p class="section-label">
+                        WORK PROGRESS
+                    </p>
+
+                    <h2>
+                        Update Fault Status
+                    </h2>
+
+                    <p class="section-description">
+                        Update the status as work progresses
+                        and provide a clear progress message.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <form id="statusUpdateForm">
+
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="newStatus">
+                            New Status
+                        </label>
+
+
+                        <select
+                            id="newStatus"
+                            required
+                        >
+
+                            <option value="">
+                                Select status
+                            </option>
+
+                            <option value="IN_PROGRESS">
+                                In Progress
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="statusMessage">
+                            Progress Message
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="statusMessage"
+                            maxlength="2000"
+                            placeholder="Example: Technician has arrived and inspection has started."
+                            required
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        id="updateStatusButton"
+                        class="primary-button"
+                    >
+                        Update Status
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+        <!-- RESOLVE FAULT -->
+
+        <section
+            class="content-card"
+            id="resolveSection"
+        >
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <p class="section-label">
+                        COMPLETE WORK
+                    </p>
+
+                    <h2>
+                        Resolve Fault
+                    </h2>
+
+                    <p class="section-description">
+                        Complete this section only after the
+                        technical work has been completed.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <form id="resolveFaultForm">
+
+
+                <div class="form-group">
+
+
+                    <label for="actualCause">
+                        Actual Cause
+                    </label>
+
+
+                    <textarea
+                        id="actualCause"
+                        rows="4"
+                        maxlength="1000"
+                        placeholder="Describe the actual technical cause of the fault..."
+                        required
+                    ></textarea>
+
+
+                </div>
+
+
+                <div class="form-group">
+
+
+                    <label for="resolutionNotes">
+                        Resolution Notes
+                    </label>
+
+
+                    <textarea
+                        id="resolutionNotes"
+                        rows="5"
+                        maxlength="3000"
+                        placeholder="Explain the work performed to resolve the fault..."
+                        required
+                    ></textarea>
+
+
+                </div>
+
+
+                <div class="form-actions">
+
+
+                    <button
+                        type="submit"
+                        id="resolveButton"
+                        class="primary-button"
+                    >
+                        Mark as Resolved
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+        <!-- EVIDENCE -->
+
+        <section class="content-card">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        EVIDENCE
+                    </p>
+
+                    <h2>
+                        Attachments
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <form
+                id="technicianAttachmentForm"
+                class="upload-form"
+            >
+
+
+                <input
+                    type="file"
+                    id="technicianAttachmentFile"
+                    accept=".jpg,.jpeg,.png,.webp,.pdf"
+                    required
+                >
+
+
+                <button
+                    type="submit"
+                    id="technicianUploadButton"
+                    class="primary-button"
+                >
+                    Upload Evidence
+                </button>
+
+
+            </form>
+
+
+            <div
+                id="technicianAttachmentsList"
+                class="attachment-list"
+            >
+
+                <p class="muted-text">
+                    Loading attachments...
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- HISTORY -->
+
+        <section class="content-card">
+
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        PROGRESS HISTORY
+                    </p>
+
+                    <h2>
+                        Fault History
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="technicianHistoryList"
+                class="timeline"
+            >
+
+                <p class="muted-text">
+                    Loading history...
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+<script src="/js/api.js"></script>
+
+<script src="/js/technician.js"></script>
+
+
+</body>
+
+</html>
