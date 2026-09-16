@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Create Staff | TANESCO</title>
+
+    <link rel="stylesheet"
+          href="/css/dashboard.css">
+
+</head>
+
+<body data-page="admin-create-staff">
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">T</div>
+
+            <div>
+                <h2>TANESCO</h2>
+                <p>Fault Management</p>
+            </div>
+
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="/admin/dashboard.html"
+               class="nav-link">
+                Dashboard
+            </a>
+
+            <a href="/admin/staff.html"
+               class="nav-link">
+                Staff Management
+            </a>
+
+            <a href="/admin/create-staff.html"
+               class="nav-link active">
+                Create Staff
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <button class="logout-button"
+                    onclick="logout()">
+                Sign Out
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="page-label">
+                    ADMIN PORTAL
+                </p>
+
+                <h1>Create Staff</h1>
+
+            </div>
+
+            <div class="user-profile">
+
+                <div class="user-avatar"
+                     id="userAvatar">
+                    A
+                </div>
+
+                <div>
+
+                    <strong id="userFullName">
+                        Administrator
+                    </strong>
+
+                    <span id="userRole">
+                        ADMIN
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <section class="content-card form-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        NEW STAFF ACCOUNT
+                    </p>
+
+                    <h2>Staff Information</h2>
+
+                    <p class="section-description">
+                        Create a secure account for an
+                        authorized TANESCO staff member.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="message"
+                 class="message"></div>
+
+
+            <form id="createStaffForm">
+
+                <div class="form-grid">
+
+
+                    <div class="form-group">
+
+                        <label for="fullName">
+                            Full Name
+                        </label>
+
+                        <input type="text"
+                               id="fullName"
+                               placeholder="Example: John Michael"
+                               minlength="2"
+                               maxlength="100"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="username">
+                            Username
+                        </label>
+
+                        <input type="text"
+                               id="username"
+                               placeholder="Example: john01"
+                               minlength="3"
+                               maxlength="50"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email Address
+                        </label>
+
+                        <input type="email"
+                               id="email"
+                               placeholder="Example: john@tanesco.co.tz"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="role">
+                            Staff Role
+                        </label>
+
+                        <select id="role"
+                                required>
+
+                            <option value="">
+                                Select staff role
+                            </option>
+
+                            <option value="OFFICER">
+                                Officer
+                            </option>
+
+                            <option value="TECHNICIAN">
+                                Technician
+                            </option>
+
+                            <option value="ADMIN">
+                                Administrator
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            Temporary Password
+                        </label>
+
+                        <input type="password"
+                               id="password"
+                               placeholder="Minimum 8 characters"
+                               minlength="8"
+                               maxlength="100"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="confirmPassword">
+                            Confirm Password
+                        </label>
+
+                        <input type="password"
+                               id="confirmPassword"
+                               placeholder="Enter password again"
+                               minlength="8"
+                               maxlength="100"
+                               required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <a href="/admin/staff.html"
+                       class="secondary-button">
+                        Cancel
+                    </a>
+
+                    <button type="submit"
+                            id="createStaffButton"
+                            class="primary-button">
+                        Create Staff Account
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/admin.js"></script>
+
+</body>
+</html>
