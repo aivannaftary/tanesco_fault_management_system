@@ -3,16 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Dashboard</title>
+
+    <title>Customer Dashboard | TANESCO</title>
+
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 
-<body>
+<body data-page="customer-dashboard">
 
-    <h1>Customer Dashboard</h1>
+<div class="app-layout">
 
-    <p>Login and role-based redirection are working successfully.</p>
+    <aside class="sidebar">
 
-    <script src="/js/api.js"></script>
+        <div class="sidebar-brand">
+            <div class="brand-logo">T</div>
+
+            <div>
+                <h2>TANESCO</h2>
+                <p>Fault Management</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="/customer/dashboard.html" class="nav-link active">
+                Dashboard
+            </a>
+
+            <a href="/customer/report-fault.html" class="nav-link">
+                Report Fault
+            </a>
+
+            <a href="/customer/my-faults.html" class="nav-link">
+                My Faults
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <button class="logout-button" onclick="logout()">
+                Sign Out
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="page-label">CUSTOMER PORTAL</p>
+                <h1>Dashboard</h1>
+            </div>
+
+            <div class="user-profile">
+
+                <div class="user-avatar" id="userAvatar">
+                    C
+                </div>
+
+                <div>
+                    <strong id="userFullName">
+                        Customer
+                    </strong>
+
+                    <span id="userRole">
+                        CUSTOMER
+                    </span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <section class="welcome-card">
+
+            <div>
+                <p class="welcome-label">
+                    TANESCO FAULT MANAGEMENT
+                </p>
+
+                <h2 id="welcomeMessage">
+                    Welcome back
+                </h2>
+
+                <p>
+                    Report electricity faults, monitor their
+                    progress and confirm when service has been
+                    successfully restored.
+                </p>
+            </div>
+
+            <a href="/customer/report-fault.html"
+               class="primary-action">
+
+                + Report New Fault
+            </a>
+
+        </section>
+
+
+        <div id="message" class="message"></div>
+
+
+        <section class="stats-grid">
+
+            <article class="stat-card">
+                <span>Total Faults</span>
+                <strong id="totalFaults">0</strong>
+                <small>All complaints reported</small>
+            </article>
+
+            <article class="stat-card">
+                <span>Active</span>
+                <strong id="activeFaults">0</strong>
+                <small>Currently being handled</small>
+            </article>
+
+            <article class="stat-card">
+                <span>Resolved</span>
+                <strong id="resolvedFaults">0</strong>
+                <small>Awaiting confirmation</small>
+            </article>
+
+            <article class="stat-card">
+                <span>Closed</span>
+                <strong id="closedFaults">0</strong>
+                <small>Successfully completed</small>
+            </article>
+
+        </section>
+
+
+        <section class="content-card">
+
+            <div class="section-heading">
+
+                <div>
+                    <p class="section-label">
+                        RECENT REPORTS
+                    </p>
+
+                    <h2>Recent Faults</h2>
+                </div>
+
+                <a href="/customer/my-faults.html"
+                   class="text-link">
+
+                    View All
+                </a>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Category</th>
+                        <th>Area</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Reported</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    <tbody id="recentFaultsBody">
+
+                    <tr>
+                        <td colspan="7" class="empty-cell">
+                            Loading your faults...
+                        </td>
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/customer.js"></script>
 
 </body>
 </html>

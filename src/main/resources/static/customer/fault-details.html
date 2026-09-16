@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fault Details | TANESCO</title>
+
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body data-page="fault-details">
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <div class="brand-logo">T</div>
+
+            <div>
+                <h2>TANESCO</h2>
+                <p>Fault Management</p>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="/customer/dashboard.html" class="nav-link">
+                Dashboard
+            </a>
+
+            <a href="/customer/report-fault.html" class="nav-link">
+                Report Fault
+            </a>
+
+            <a href="/customer/my-faults.html"
+               class="nav-link active">
+                My Faults
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="logout-button" onclick="logout()">
+                Sign Out
+            </button>
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <p class="page-label">CUSTOMER PORTAL</p>
+                <h1>Fault Details</h1>
+            </div>
+
+            <div class="user-profile">
+
+                <div class="user-avatar" id="userAvatar">
+                    C
+                </div>
+
+                <div>
+                    <strong id="userFullName">
+                        Customer
+                    </strong>
+
+                    <span id="userRole">
+                        CUSTOMER
+                    </span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div id="message" class="message"></div>
+
+
+        <div class="details-grid">
+
+            <section class="content-card">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="section-label">
+                            FAULT
+                        </p>
+
+                        <h2 id="detailReference">
+                            Loading...
+                        </h2>
+                    </div>
+
+                    <span id="detailStatus"
+                          class="status-badge">
+
+                        Loading
+                    </span>
+
+                </div>
+
+
+                <div class="detail-list">
+
+                    <div class="detail-item">
+                        <span>Category</span>
+                        <strong id="detailCategory">-</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Priority</span>
+                        <strong id="detailPriority">-</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Area</span>
+                        <strong id="detailArea">-</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Location</span>
+                        <strong id="detailLocation">-</strong>
+                    </div>
+
+                    <div class="detail-item full">
+                        <span>Description</span>
+                        <strong id="detailDescription">-</strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Technician</span>
+                        <strong id="detailTechnician">
+                            Not assigned
+                        </strong>
+                    </div>
+
+                    <div class="detail-item">
+                        <span>Reported</span>
+                        <strong id="detailReported">-</strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section class="content-card">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="section-label">EVIDENCE</p>
+                        <h2>Attachments</h2>
+                    </div>
+                </div>
+
+
+                <form id="attachmentForm"
+                      class="upload-form">
+
+                    <input
+                            type="file"
+                            id="attachmentFile"
+                            accept=".jpg,.jpeg,.png,.webp,.pdf"
+                            required
+                    >
+
+                    <button type="submit"
+                            class="primary-button"
+                            id="uploadButton">
+
+                        Upload Evidence
+                    </button>
+
+                </form>
+
+
+                <div id="attachmentsList"
+                     class="attachment-list">
+
+                    <p class="muted-text">
+                        Loading attachments...
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <section class="content-card">
+
+            <div class="section-heading">
+                <div>
+                    <p class="section-label">PROGRESS</p>
+                    <h2>Fault History</h2>
+                </div>
+            </div>
+
+            <div id="historyList"
+                 class="timeline">
+
+                <p class="muted-text">
+                    Loading history...
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="content-card"
+                 id="resolutionSection"
+                 style="display: none;">
+
+            <div class="section-heading">
+
+                <div>
+                    <p class="section-label">
+                        CUSTOMER CONFIRMATION
+                    </p>
+
+                    <h2>Confirm Resolution</h2>
+
+                    <p class="section-description">
+                        Confirm only after you have verified that
+                        electricity service has been restored.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form id="confirmationForm">
+
+                <div class="form-group">
+
+                    <label for="confirmationMessage">
+                        Confirmation Message
+                    </label>
+
+                    <textarea
+                            id="confirmationMessage"
+                            rows="4"
+                            required
+                    >Electricity has been restored and I confirm that the reported fault has been resolved.</textarea>
+
+                </div>
+
+                <button type="submit"
+                        class="primary-button"
+                        id="confirmButton">
+
+                    Confirm Resolution
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/customer.js"></script>
+
+</body>
+</html>

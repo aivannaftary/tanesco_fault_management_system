@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Report Fault | TANESCO</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+</head>
+
+
+<body data-page="report-fault">
+
+
+<div class="app-layout">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                T
+            </div>
+
+            <div>
+
+                <h2>
+                    TANESCO
+                </h2>
+
+                <p>
+                    Fault Management
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+
+            <a
+                href="/customer/dashboard.html"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+
+            <a
+                href="/customer/report-fault.html"
+                class="nav-link active"
+            >
+                Report Fault
+            </a>
+
+
+            <a
+                href="/customer/my-faults.html"
+                class="nav-link"
+            >
+                My Faults
+            </a>
+
+
+        </nav>
+
+
+        <div class="sidebar-footer">
+
+            <button
+                class="logout-button"
+                onclick="logout()"
+            >
+                Sign Out
+            </button>
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <main class="main-content">
+
+
+        <!-- =================================================
+             TOP BAR
+        ================================================== -->
+
+        <header class="topbar">
+
+
+            <div>
+
+                <p class="page-label">
+                    CUSTOMER PORTAL
+                </p>
+
+                <h1>
+                    Report a Fault
+                </h1>
+
+            </div>
+
+
+            <div class="user-profile">
+
+
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
+                    C
+                </div>
+
+
+                <div>
+
+                    <strong id="userFullName">
+                        Customer
+                    </strong>
+
+                    <span id="userRole">
+                        CUSTOMER
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+        <!-- =================================================
+             REPORT FAULT FORM
+        ================================================== -->
+
+        <section class="content-card form-card">
+
+
+            <div class="section-heading">
+
+
+                <div>
+
+                    <p class="section-label">
+                        NEW COMPLAINT
+                    </p>
+
+                    <h2>
+                        Fault Information
+                    </h2>
+
+                    <p class="section-description">
+                        Provide accurate information to help
+                        TANESCO identify and respond to the
+                        problem.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- MESSAGE AREA -->
+
+            <div
+                id="message"
+                class="message"
+            ></div>
+
+
+            <!-- FORM -->
+
+            <form id="faultForm">
+
+
+                <!-- =========================================
+                     CATEGORY AND PRIORITY
+                ========================================== -->
+
+                <div class="form-grid">
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="form-group">
+
+
+                        <label for="category">
+                            Fault Category
+                        </label>
+
+
+                        <select
+                            id="category"
+                            required
+                        >
+
+
+                            <option value="">
+                                Select category
+                            </option>
+
+
+                            <option value="Power outage">
+                                Power outage
+                            </option>
+
+
+                            <option value="Low voltage">
+                                Low voltage
+                            </option>
+
+
+                            <option value="Transformer fault">
+                                Transformer fault
+                            </option>
+
+
+                            <option value="Damaged power line">
+                                Damaged power line
+                            </option>
+
+
+                            <option value="Meter problem">
+                                Meter problem
+                            </option>
+
+
+                            <option value="Street light fault">
+                                Street light fault
+                            </option>
+
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+
+                        </select>
+
+
+                    </div>
+
+
+                    <!-- PRIORITY -->
+
+                    <div class="form-group">
+
+
+                        <label for="priority">
+                            Priority
+                        </label>
+
+
+                        <select
+                            id="priority"
+                            required
+                        >
+
+
+                            <option value="">
+                                Select priority
+                            </option>
+
+
+                            <option value="LOW">
+                                Low
+                            </option>
+
+
+                            <option value="MEDIUM">
+                                Medium
+                            </option>
+
+
+                            <option value="HIGH">
+                                High
+                            </option>
+
+
+                        </select>
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =========================================
+                     AREA AND LOCATION
+                ========================================== -->
+
+                <div class="form-grid">
+
+
+                    <!-- AREA -->
+
+                    <div class="form-group">
+
+
+                        <label for="area">
+                            Area
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="area"
+                            placeholder="Example: Sinza"
+                            required
+                        >
+
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+
+                    <div class="form-group">
+
+
+                        <label for="location">
+                            Location
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="location"
+                            placeholder="Example: Sinza, Dar es Salaam"
+                            required
+                        >
+
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =========================================
+                     DESCRIPTION
+                ========================================== -->
+
+                <div class="form-group">
+
+
+                    <label for="description">
+                        Fault Description
+                    </label>
+
+
+                    <textarea
+                        id="description"
+                        rows="6"
+                        placeholder="Describe the electricity problem in detail..."
+                        required
+                    ></textarea>
+
+
+                </div>
+
+
+                <!-- =========================================
+                     ACTION BUTTONS
+                ========================================== -->
+
+                <div class="form-actions">
+
+
+                    <a
+                        href="/customer/dashboard.html"
+                        class="secondary-button"
+                    >
+                        Cancel
+                    </a>
+
+
+                    <button
+                        type="submit"
+                        id="submitFaultButton"
+                        class="primary-button"
+                    >
+                        Submit Fault
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script src="/js/api.js"></script>
+
+<script src="/js/customer.js"></script>
+
+
+</body>
+
+</html>
