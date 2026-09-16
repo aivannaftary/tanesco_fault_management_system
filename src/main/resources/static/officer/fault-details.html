@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Fault Details | TANESCO Officer</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+</head>
+
+<body data-page="officer-fault-details">
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                T
+            </div>
+
+            <div>
+                <h2>TANESCO</h2>
+                <p>Fault Management</p>
+            </div>
+
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="/officer/dashboard.html"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="/officer/faults.html"
+                class="nav-link active"
+            >
+                Fault Management
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <button
+                class="logout-button"
+                onclick="logout()"
+            >
+                Sign Out
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="page-label">
+                    OFFICER PORTAL
+                </p>
+
+                <h1>
+                    Fault Details
+                </h1>
+
+            </div>
+
+            <div class="user-profile">
+
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
+                    O
+                </div>
+
+                <div>
+
+                    <strong id="userFullName">
+                        Officer
+                    </strong>
+
+                    <span id="userRole">
+                        OFFICER
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <section class="content-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        FAULT INFORMATION
+                    </p>
+
+                    <h2 id="detailReference">
+                        Loading...
+                    </h2>
+
+                </div>
+
+                <span
+                    id="detailStatus"
+                    class="status-badge"
+                >
+                    Loading
+                </span>
+
+            </div>
+
+
+            <div class="detail-list">
+
+                <div class="detail-item">
+                    <span>Customer</span>
+                    <strong id="detailCustomer">-</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Username</span>
+                    <strong id="detailCustomerUsername">-</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Category</span>
+                    <strong id="detailCategory">-</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Priority</span>
+                    <strong id="detailPriority">-</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Area</span>
+                    <strong id="detailArea">-</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Location</span>
+                    <strong id="detailLocation">-</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Technician</span>
+                    <strong id="detailTechnician">-</strong>
+                </div>
+
+                <div class="detail-item">
+                    <span>Reported</span>
+                    <strong id="detailReported">-</strong>
+                </div>
+
+                <div class="detail-item full">
+                    <span>Description</span>
+                    <strong id="detailDescription">-</strong>
+                </div>
+
+                <div class="detail-item full">
+                    <span>Actual Cause</span>
+                    <strong id="detailCause">-</strong>
+                </div>
+
+                <div class="detail-item full">
+                    <span>Resolution Notes</span>
+                    <strong id="detailResolution">-</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section
+            class="content-card"
+            id="assignmentSection"
+        >
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        TECHNICIAN ASSIGNMENT
+                    </p>
+
+                    <h2>
+                        Assign Technician
+                    </h2>
+
+                    <p class="section-description">
+                        Select a technician to handle this
+                        customer fault.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="assignmentForm">
+
+                <div class="form-group">
+
+                    <label for="technicianSelect">
+                        Technician
+                    </label>
+
+                    <select
+                        id="technicianSelect"
+                        required
+                    >
+
+                        <option value="">
+                            Loading technicians...
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        type="submit"
+                        id="assignButton"
+                        class="primary-button"
+                    >
+                        Assign Technician
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <section class="content-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        PROGRESS HISTORY
+                    </p>
+
+                    <h2>
+                        Fault History
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div
+                id="officerHistoryList"
+                class="timeline"
+            >
+
+                <p class="muted-text">
+                    Loading history...
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="content-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        EVIDENCE
+                    </p>
+
+                    <h2>
+                        Attachments
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <div
+                id="officerAttachmentsList"
+                class="attachment-list"
+            >
+
+                <p class="muted-text">
+                    Loading attachments...
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/officer.js"></script>
+
+</body>
+</html>

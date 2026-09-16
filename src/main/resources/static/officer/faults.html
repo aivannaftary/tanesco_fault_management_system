@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Fault Management | TANESCO Officer</title>
+
+    <link
+        rel="stylesheet"
+        href="/css/dashboard.css"
+    >
+
+</head>
+
+<body data-page="officer-faults">
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="brand-logo">
+                T
+            </div>
+
+            <div>
+                <h2>TANESCO</h2>
+                <p>Fault Management</p>
+            </div>
+
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a
+                href="/officer/dashboard.html"
+                class="nav-link"
+            >
+                Dashboard
+            </a>
+
+            <a
+                href="/officer/faults.html"
+                class="nav-link active"
+            >
+                Fault Management
+            </a>
+
+        </nav>
+
+        <div class="sidebar-footer">
+
+            <button
+                class="logout-button"
+                onclick="logout()"
+            >
+                Sign Out
+            </button>
+
+        </div>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+
+                <p class="page-label">
+                    OFFICER PORTAL
+                </p>
+
+                <h1>
+                    Fault Management
+                </h1>
+
+            </div>
+
+            <div class="user-profile">
+
+                <div
+                    class="user-avatar"
+                    id="userAvatar"
+                >
+                    O
+                </div>
+
+                <div>
+
+                    <strong id="userFullName">
+                        Officer
+                    </strong>
+
+                    <span id="userRole">
+                        OFFICER
+                    </span>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+
+        <section class="content-card">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="section-label">
+                        CUSTOMER COMPLAINTS
+                    </p>
+
+                    <h2>
+                        All Faults
+                    </h2>
+
+                    <p class="section-description">
+                        Search, filter and manage reported
+                        faults.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="filter-row">
+
+                <input
+                    type="text"
+                    id="faultSearch"
+                    placeholder="Search reference, category, area or location..."
+                >
+
+
+                <select id="statusFilter">
+
+                    <option value="">
+                        All statuses
+                    </option>
+
+                    <option value="SUBMITTED">
+                        Submitted
+                    </option>
+
+                    <option value="ASSIGNED">
+                        Assigned
+                    </option>
+
+                    <option value="IN_PROGRESS">
+                        In Progress
+                    </option>
+
+                    <option value="RESOLVED">
+                        Resolved
+                    </option>
+
+                    <option value="CLOSED">
+                        Closed
+                    </option>
+
+                </select>
+
+
+                <select id="priorityFilter">
+
+                    <option value="">
+                        All priorities
+                    </option>
+
+                    <option value="HIGH">
+                        High
+                    </option>
+
+                    <option value="MEDIUM">
+                        Medium
+                    </option>
+
+                    <option value="LOW">
+                        Low
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+                        <th>Reference</th>
+                        <th>Customer</th>
+                        <th>Category</th>
+                        <th>Area</th>
+                        <th>Priority</th>
+                        <th>Status</th>
+                        <th>Technician</th>
+                        <th></th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="officerFaultsBody">
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="empty-cell"
+                        >
+                            Loading faults...
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/js/api.js"></script>
+<script src="/js/officer.js"></script>
+
+</body>
+</html>
